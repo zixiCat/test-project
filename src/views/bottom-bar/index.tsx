@@ -1,5 +1,5 @@
 import React from 'react';
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import useOrderStore from '../order/orderStore';
 
@@ -30,8 +30,6 @@ const BottomBar = () => {
     </View>
   );
 };
-
-const height = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   main: {

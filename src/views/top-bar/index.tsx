@@ -1,13 +1,7 @@
 import React from 'react';
-import {
-  Text,
-  StyleSheet,
-  View,
-  Dimensions,
-  TouchableHighlight,
-} from 'react-native';
+import {StyleSheet, View, Dimensions} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Recommend from '../recommend';
+
 import CupIcon from './icons/cup-icon';
 import HamburgIcon from './icons/hamburg-icon';
 import RecommendIcon from './icons/recommend-icon';

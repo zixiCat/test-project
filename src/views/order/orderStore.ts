@@ -1,11 +1,21 @@
 import create from 'zustand';
+
 import {MenuItem} from '../recommend';
 
 export interface OrderStore {
+  /**
+   * All menu
+   */
   menuList: MenuItem[];
   setMenuList: (val: MenuItem[]) => void;
+  /**
+   * The menu item which is currently previewed
+   */
   curPreviewMenuItem?: MenuItem;
   setCurPreviewMenuItem: (val: MenuItem) => void;
+  /**
+   * The currently placed order
+   */
   order: MenuItem[];
   setOrder: (val: MenuItem[]) => void;
 }

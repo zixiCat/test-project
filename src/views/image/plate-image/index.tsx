@@ -1,6 +1,5 @@
 import React from 'react';
 import {Image, StyleSheet, View} from 'react-native';
-import Svg, {Path, G, Defs, LinearGradient} from 'react-native-svg';
 
 const PlateImage = () => {
   return (

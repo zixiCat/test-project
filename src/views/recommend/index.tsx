@@ -1,10 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Animated, Dimensions, StyleSheet, Text, View} from 'react-native';
+import {SwiperFlatList} from 'react-native-swiper-flatlist';
+
 import ChipsImage, {FinishedChipsImage} from '../image/chips-image';
 import CoffeeImage, {FinishedCoffeeImage} from '../image/coffee-image';
 import HamburgerImage, {FinishedHamburgerImage} from '../image/hamburger-image';
-import {SwiperFlatList} from 'react-native-swiper-flatlist';
-import AddBtnImage from '../image/add-image';
 import useOrderStore from '../order/orderStore';
 
 export interface MenuItem {
@@ -64,13 +64,23 @@ const {width} = Dimensions.get('window');
 
 const Recommend = () => {
   const [activeIndex, setActiveIndex] = useState(-1);
-  let lastContentOffset = useRef(0);
+  /**
+   * The following two variables is used to set Animated Values when you change menu item
+   */
   const opacity = useRef(new Animated.Value(1)).current;
   const titlePosX = useRef(new Animated.Value(0)).current;
+  /**
+   * The startContentOffset is used to record the initial offset of current menu item
+   */
+  const startContentOffset = useRef(0);
+
   const setMenuList = useOrderStore(s => s.setMenuList);
   const menuList = useOrderStore(s => s.menuList);
   const setCurPreviewMenuItem = useOrderStore(s => s.setCurPreviewMenuItem);
 
+  /**
+   * Init
+   */
   useEffect(() => {
     setMenuList(mockData);
     setActiveIndex(0);
@@ -88,7 +98,8 @@ const Recommend = () => {
             contentOffset: {x},
           },
         }) => {
-          const relativeValue = Math.abs(x - lastContentOffset.current) / width;
+          const relativeValue =
+            Math.abs(x - startContentOffset.current) / width;
           if (relativeValue <= 0.25) {
             opacity.setValue(1 - relativeValue * 4);
             titlePosX.setValue(relativeValue * 200);
@@ -103,11 +114,13 @@ const Recommend = () => {
           titlePosX.setValue(0);
         }}
         onScrollBeginDrag={e => {
-          lastContentOffset.current = Math.round(e.nativeEvent.contentOffset.x);
+          startContentOffset.current = Math.round(
+            e.nativeEvent.contentOffset.x,
+          );
         }}
         onScrollEndDrag={e => {
           const direction = !!(
-            e.nativeEvent.contentOffset.x - lastContentOffset.current >
+            e.nativeEvent.contentOffset.x - startContentOffset.current >
             0
           );
           setActiveIndex(prev => {

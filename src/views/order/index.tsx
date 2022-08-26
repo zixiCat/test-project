@@ -1,8 +1,7 @@
-import {useDebounceFn} from 'ahooks';
-import React, {useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import {Animated, Dimensions, StyleSheet, View, Alert} from 'react-native';
+
 import AddBtnImage from '../image/add-image';
-import {FinishedHamburgerImage} from '../image/hamburger-image';
 import PlateImage from '../image/plate-image';
 import useOrderStore from './orderStore';
 
@@ -10,6 +9,9 @@ const width = Dimensions.get('window').width;
 
 const Order = () => {
   const foodItemsPosX = useRef(new Animated.Value(0)).current;
+  /**
+   * The following three tempViews is used to set Animated Values when you add the order
+   */
   const tempViewValueX = useRef(new Animated.Value(140)).current;
   const tempViewValueY = useRef(new Animated.Value(-120)).current;
   const tempViewValueScale = useRef(new Animated.Value(0)).current;
@@ -17,14 +19,13 @@ const Order = () => {
   const curPreviewMenuItem = useOrderStore(s => s.curPreviewMenuItem);
   const order = useOrderStore(s => s.order);
   const setOrder = useOrderStore(s => s.setOrder);
-  const fn = useDebounceFn;
 
   return (
     <View style={styles.main}>
       <View style={styles.add_btn}>
         <AddBtnImage
           onPress={() => {
-            if (order.length === 5) {
+            if (order.length >= 5) {
               Alert.alert('温馨提示', '餐盘已满，请添加新的餐盘', [
                 {text: '知道了'},
               ]);
@@ -33,6 +34,9 @@ const Order = () => {
             const newOrder = [...order];
             curPreviewMenuItem && newOrder.push(curPreviewMenuItem);
             const foodItemsPosXValue = -50 * Math.sqrt(newOrder.length - 1);
+            /**
+             * Update Animated Values of food in plate
+             */
             Animated.timing(foodItemsPosX, {
               toValue: foodItemsPosXValue,
               duration: 300,
@@ -42,6 +46,9 @@ const Order = () => {
                 setOrder(newOrder);
               }
             });
+            /**
+             * Update Animated Values of three tempViews
+             */
             Animated.parallel([
               Animated.timing(tempViewValueX, {
                 toValue: foodItemsPosXValue,
@@ -60,6 +67,7 @@ const Order = () => {
               }),
             ]).start(({finished}) => {
               if (finished) {
+                // Special initialization
                 const leftValueOfLastItem = order.length * 50 + width / 2 - 140;
                 tempViewValueX.setValue(140 - leftValueOfLastItem);
                 tempViewValueY.setValue(newOrder.length % 2 ? -80 : -120);
@@ -142,10 +150,5 @@ const styles = StyleSheet.create({
     top: 25,
     margin: 'auto',
     width: 50,
-  },
-  title: {
-    position: 'absolute',
-    backgroundColor: 'red',
-    top: 300,
   },
 });
